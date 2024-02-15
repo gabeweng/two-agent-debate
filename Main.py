@@ -132,6 +132,32 @@ names = {
 topic = "The current impact of automation and artificial intelligence on employment"
 word_limit = 50  # word limit for task brainstorming
 
+# Ask an LLM to add detail to the topic description
+
+conversation_description = f"""Here is the topic of conversation: {topic}
+The participants are: {', '.join(names.keys())}"""
+
+agent_descriptor_system_message = SystemMessage(
+    content="You can add detail to the description of the conversation participant."
+)
+
+
+def generate_agent_description(name):
+    agent_specifier_prompt = [
+        agent_descriptor_system_message,
+        HumanMessage(
+            content=f"""{conversation_description}
+            Please reply with a creative description of {name}, in {word_limit} words or less. 
+            Speak directly to {name}.
+            Give them a point of view.
+            Do not add anything else."""
+        ),
+    ]
+    agent_description = ChatOpenAI(temperature=1.0)(agent_specifier_prompt).content
+    return agent_description
+
+
+agent_descriptions = {name: generate_agent_description(name) for name in names}
 
 # Title
 st.title('Two Agent Debate')
