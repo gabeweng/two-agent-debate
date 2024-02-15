@@ -125,7 +125,12 @@ class DialogueAgentWithTools(DialogueAgent):
 
         return message.content
 
-
+names = {
+    "AI accelerationist": ["arxiv", "ddg-search", "wikipedia"],
+    "AI alarmist": ["arxiv", "ddg-search", "wikipedia"],
+}
+topic = "The current impact of automation and artificial intelligence on employment"
+word_limit = 50  # word limit for task brainstorming
 
 
 # Title
