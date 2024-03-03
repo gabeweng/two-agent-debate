@@ -127,6 +127,8 @@ class DialogueAgentWithTools(DialogueAgent):
         )
 
         return message.content
+    
+print("AAAAA")
 
 names = {
     "AI accelerationist": ["arxiv", "ddg-search", "wikipedia"],
@@ -162,6 +164,42 @@ def generate_agent_description(name):
 
 agent_descriptions = {name: generate_agent_description(name) for name in names}
 
-# Title
+for name, description in agent_descriptions.items():
+    st.write(description)
+
+#Generate System Messages
+    
+def generate_system_message(name, description, tools):
+    return f"""{conversation_description}
+    
+Your name is {name}.
+
+Your description is as follows: {description}
+
+Your goal is to persuade your conversation partner of your point of view.
+
+DO look up information with your tool to refute your partner's claims.
+DO cite your sources.
+
+DO NOT fabricate fake citations.
+DO NOT cite any source that you did not look up.
+
+Do not add anything else.
+
+Stop speaking the moment you finish speaking from your perspective.
+"""
+
+
+agent_system_messages = {
+    name: generate_system_message(name, description, tools)
+    for (name, tools), description in zip(names.items(), agent_descriptions.values())
+}
+
+
+for name, system_message in agent_system_messages.items():
+    st.write(name)
+    st.write(system_message)
+
+# # Title
 st.title('Two Agent Debate')
 
