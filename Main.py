@@ -12,6 +12,9 @@ from langchain_openai import ChatOpenAI
 
 from langchain.agents import AgentType, initialize_agent, load_tools
 
+import os
+
+os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
 class DialogueAgent:
     def __init__(
         self,
