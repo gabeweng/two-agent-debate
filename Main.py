@@ -200,6 +200,24 @@ for name, system_message in agent_system_messages.items():
     st.write(name)
     st.write(system_message)
 
+#Generate Moderator Message
+topic_specifier_prompt = [
+    SystemMessage(content="You can make a topic more specific."),
+    HumanMessage(
+        content=f"""{topic}
+        
+        You are the moderator.
+        Please make the topic more specific.
+        Please reply with the specified quest in {word_limit} words or less. 
+        Speak directly to the participants: {*names,}.
+        Do not add anything else."""
+    ),
+]
+specified_topic = ChatOpenAI(temperature=1.0)(topic_specifier_prompt).content
+
+print(f"Original topic:\n{topic}\n")
+print(f"Detailed topic:\n{specified_topic}\n")
+
 # # Title
 st.title('Two Agent Debate')
 
