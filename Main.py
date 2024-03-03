@@ -218,6 +218,39 @@ specified_topic = ChatOpenAI(temperature=1.0)(topic_specifier_prompt).content
 print(f"Original topic:\n{topic}\n")
 print(f"Detailed topic:\n{specified_topic}\n")
 
-# # Title
+# Title
 st.title('Two Agent Debate')
+
+# we set `top_k_results`=2 as part of the `tool_kwargs` to prevent results from overflowing the context limit
+agents = [
+    DialogueAgentWithTools(
+        name=name,
+        system_message=SystemMessage(content=system_message),
+        model=ChatOpenAI(model_name="gpt-4", temperature=0.2),
+        tool_names=tools,
+        top_k_results=2,
+    )
+    for (name, tools), system_message in zip(
+        names.items(), agent_system_messages.values()
+    )
+]
+
+def select_next_speaker(step: int, agents: List[DialogueAgent]) -> int:
+    idx = (step) % len(agents)
+    return idx
+
+max_iters = 6
+n = 0
+
+simulator = DialogueSimulator(agents=agents, selection_function=select_next_speaker)
+simulator.reset()
+simulator.inject("Moderator", specified_topic)
+st.write(f"(Moderator): {specified_topic}")
+
+while n < max_iters:
+    name, message = simulator.step()
+    st.write(f"({name}): {message}")
+    st.write("\n")
+    n += 1
+
 
